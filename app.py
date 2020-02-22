@@ -19,31 +19,43 @@ team_stats = team_stats.rename(columns={"FG%":"FG_pct","3P%":"3P_pct","Opp_3P%":
 teams = team_stats['Nickname'].unique()
 players = player_stats['Player'].unique()
 
-team_features = team_stats.columns.tolist()
-player_features = player_stats.columns.tolist()
+team_stat_categories = team_stats.columns.tolist()
+player_stat_categories = player_stats.columns.tolist()
 
 # App Layout
 app.layout = html.Div(
     [
+        # Left dropdown for team 1
         html.Div(
             [
                 dcc.Dropdown(
-                    id = 'xaxis-column',
+                    id = 'team1',
                     options = [{'label': i, 'value': i} for i in teams],
                 ),
             ],
-            style = {'width': '48%', 'display': 'inline-block'}
+            style = {'width': '33%', 'display': 'inline-block', 'float': 'left'}
         ),
 
+        # Middle dropdown for team 2
         html.Div(
             [
                 dcc.Dropdown(
-                    id = 'yaxis-column',
-                    options = [{'label': i, 'value': i} for i in players],
-                    # value = 'lol'
+                    id = 'team2',
+                    options = [{'label': i, 'value': i} for i in teams],
                 ),
             ],
-            style = {'width' : '48%', 'display': 'inline-block', 'float': 'right'}
+            style = {'width' : '34%', 'display': 'inline-block', 'float': 'center'}
+        ),
+
+        # Right dropdown for category
+        html.Div(
+            [
+                dcc.Dropdown(
+                    id = 'team_stat_category',
+                    options = [{'label': i, 'value': i} for i in team_stat_categories]
+                ),
+            ],
+            style = {'width': '33%', 'display': 'inline-block', 'float': 'right'}
         ),
 
         dcc.Graph(id='indicator-graphic'),
@@ -54,20 +66,37 @@ app.layout = html.Div(
 @app.callback(
     Output('indicator-graphic', 'figure'),
     [
-        Input('xaxis-column', 'value'),
-        Input('yaxis-column', 'value'),
+        Input('team1', 'value'),
+        Input('team2', 'value'),
     ]
 )
 
-def update_graph(xaxis_columnname, yaxis_columnname):
-    return{
-        'data': [
-            dict(
-                # x = ,
-                y = team_stats[team_stats['']]
-            )
-        ]
-    }
+@app.callback(
+    Output('indicator-graphic', 'figure'),
+    [
+        Input('team1', 'value'),
+        Input('team2', 'value'),
+        Input('team_stat_category', 'value')
+    ]
+)
+
+@app.callback(
+    Output('indicator-graphic', 'figure'),
+    [Input('xaxis-column', 'value'),
+     Input('yaxis-column', 'value'),
+     Input('xaxis-type', 'value'),
+     Input('yaxis-type', 'value'),
+     Input('year--slider', 'value')])
+
+# def update_graph(xaxis_columnname, yaxis_columnname):
+#     return{
+#         'data': [
+#             dict(
+#                 # x = ,
+#                 y = team_stats[team_stats['']]
+#             )
+#         ]
+#     }
 
 
 if __name__ == '__main__':
