@@ -108,8 +108,12 @@ def barplt_players(data,feat):
 app.layout = html.Div(
     [
 
-        dbc.Row(dbc.Col(html.H1("NBA 2K RANKINGS",className= 'text-center')),align="center",),
+
+
+        dbc.Row(dbc.Col(html.H1(children ="NBA 2K Analysis", className = 'banner', style ={'fontSize' : 100,'color':'Purple',
+            'font-family':'monospace','textAlign': 'center'})),align="center",),
         # Left dropdown for team 1
+
         html.Div([
             dcc.Markdown('''# Select First Team '''),
                 dcc.Dropdown(
