@@ -4,6 +4,7 @@ import numpy as np
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State, ClientsideFunction
 
 import pandasql as ps
@@ -18,12 +19,13 @@ import io
 import dash_daq as daq
 
 
-app = dash.Dash(__name__)
+external_stylesheets =['https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.BOOTSTRAP]
+
+app = dash.Dash(__name__,external_stylesheets=external_stylesheets)
 
 colors = {
-    "graphBackground": "#F5F5F5",
-    "background": "#ffffff",
-    "text": "#000000"
+    'background': '#111111',
+    'text': '#7FDBFF'
 }
 
 
@@ -34,18 +36,57 @@ team_stats = pd.read_excel('2KL Team Stats.xlsx')
 player_stats = player_stats.rename(columns = {"FG%":"FG_pct","FG3%":"FDG3_pct","FT%":"FT_pct","eFG%":"effi_pct","TS%":"Tru_shoot_pct"})
 team_stats = team_stats.rename(columns={"FG%":"FG_pct","3P%":"3P_pct","Opp_3P%":"Opp_3P_pct","Opp_FG%":"Opp_FG_pct"})
 
-teams = team_stats['Nickname'].unique()
-players = player_stats['Player'].unique()
-
-team_stat_categories = team_stats.columns.tolist()
-player_stat_categories = player_stats.columns.tolist()
-
 pysqldf = lambda q: sqldf(q,globals())
 q1 = '''
      SELECT Nickname,Points,Offensive_Rebounds,Defensive_Rebounds,Assists,Steals,Turnovers
      FROM team_stats
     '''
-main_cats = pysqldf(q1)
+main_cats_teams = pysqldf(q1)
+
+
+q2 = '''
+     SELECT Player,OREB,DREB,REB,AST,PF,STL,TOV,BLK,PTS
+     FROM player_stats
+    '''
+main_cats_players = pysqldf(q2)
+
+#teams = team_stats['Nickname'].unique()
+teams = main_cats_teams['Nickname'].unique()
+players = main_cats_players['Player'].unique()
+
+#team_stat_categories = team_stats.columns.tolist()
+team_stat_categories = main_cats_teams.columns.tolist()
+player_stat_categories = main_cats_players.columns.tolist()
+
+
+
+
+
+
+
+def build_banner():
+    return html.Div(
+        id="banner",
+        className="banner",
+        children=[
+            html.Div(
+                id="banner-text",
+                children=[
+                    html.H5("Manufacturing SPC Dashboard"),
+                    html.H6("Process Control and Exception Reporting"),
+                ],
+            ),
+            html.Div(
+                id="banner-logo",
+                children=[
+                    html.Button(
+                        id="learn-more-button", children="LEARN MORE", n_clicks=0
+                    ),
+                    html.Img(id="logo"),
+                ],
+            ),
+        ],
+    )
 
 def barplt_teams(data,feat):
     
@@ -66,16 +107,18 @@ def barplt_players(data,feat):
 # App Layout
 app.layout = html.Div(
     [
+
+        dbc.Row(dbc.Col(html.H1("NBA 2K RANKINGS",className= 'text-center')),align="center",),
         # Left dropdown for team 1
         html.Div([
-            dcc.Markdown('Select First Team'),
+            dcc.Markdown('''# Select First Team '''),
                 dcc.Dropdown(
                     id = 'team1',
                     options = [{'label': i, 'value': i} for i in teams],
-                    value = 'Blazer5 Gaming'),
+                    value = 'Kings Guard Gaming'),
 
         # Middle dropdown for team 2
-            dcc.Markdown('Select Second Team'),
+            dcc.Markdown('''# Select Second Team'''),
                 dcc.Dropdown(
                     id = 'team2',
                     options = [{'label': i, 'value': i} for i in teams],
@@ -83,7 +126,7 @@ app.layout = html.Div(
                 ),
             dcc.Graph(id = 'indicator-graphic')
             ],
-            style = {'width' : '40%', 'display': 'inline-block', 'float': 'center'}
+            style = {'width' : '50%', 'display': 'inline-block', 'float': 'center'}
         ),
 
 
@@ -91,11 +134,11 @@ app.layout = html.Div(
         # Right dropdown for category
         html.Div(
             [
-                dcc.Markdown('All Teams'),
+                dcc.Markdown('''# All Teams'''),
                     dcc.Dropdown(
                         id = 'team_stat_category',
                         options = [{'label': i, 'value': i} for i in team_stat_categories],
-                        value = 'Blocked_Shots'
+                        value = 'Points'
                     ),
                     dcc.Graph(id='allteams_output-graphic')
             ],
@@ -106,7 +149,7 @@ app.layout = html.Div(
 
         html.Div(
             [
-                dcc.Markdown('All Players'),
+                dcc.Markdown('''# All Players'''),
                     dcc.Dropdown(
                         id = 'player_stat_category',
                         options = [{'label': i, 'value': i}for i in player_stat_categories],
@@ -114,7 +157,7 @@ app.layout = html.Div(
                     ),
                     dcc.Graph(id='allplayers_output-graphic')
             ],
-            style = {'width': '50%','display': 'inline-block', 'float': 'right'}
+            style = {'width': '100%','display': 'inline-block', 'float': 'right'}
         )
         
     ]
@@ -158,14 +201,21 @@ def update_output_div(feat):
      Input('team_stat_category', 'value')])
 
 def update_graph(team_1, team_2, stat):
+
+    piedata = go.Pie(labels = [team_1,team_2],values = [team_stats[team_stats["Nickname"] == team_1][stat].values[0],
+                                                      team_stats[team_stats["Nickname"] == team_2][stat].values[0]])
     return {
-        'data': [
-            {'x': [stat], 'y': team_stats[team_stats["Nickname"] == team_1][stat], 'type': 'bar', 'name': team_1},
-            {'x': [stat], 'y': team_stats[team_stats["Nickname"] == team_2][stat], 'type': 'bar', 'name': team_2},
-        ],
-        'layout': {
-            'title': (team_1 + ' vs. ' + team_2 + ' on ' + stat)
-        }
+
+        'data':[piedata],'layout':{'title':(team_1 +' vs.' + team_2)}
+
+
+        #'data': [
+           #{'x': [stat], 'y': team_stats[team_stats["Nickname"] == team_1][stat], 'type': 'bar', 'name': team_1},
+            #{'x': [stat], 'y': team_stats[team_stats["Nickname"] == team_2][stat], 'type': 'bar', 'name': team_2},
+        #],
+        #'layout': {
+            #'title': (team_1 + ' vs. ' + team_2 + ' on ' + stat)
+        #}
     }
 
 
