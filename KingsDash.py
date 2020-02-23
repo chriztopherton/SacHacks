@@ -101,7 +101,7 @@ app.layout = html.Div(
     [
         html.Div(
             [
-                html.H1('NBA 2K Rankings', style = {'fontSize': 50, 'text-transform': 'uppercase', 'font-weight': '800'}),
+                html.H1('NBA 2K DASH', style = {'fontSize': 50, 'text-transform': 'uppercase', 'font-weight': '800'}),
                 html.Img(src = '/assets/2k20.png')
             ],
             className = 'banner'
