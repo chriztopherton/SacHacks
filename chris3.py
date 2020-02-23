@@ -143,7 +143,7 @@ app.layout = html.Div(
                     ),
                     dcc.Graph(id='allplayers_output-graphic')
             ],
-            style = {'width': '100%','display': 'inline-block', 'float': 'right'}
+            style = {'width': '50%','display': 'inline-block', 'float': 'right'}
         ),
 
 #################################################################################################################################################################################################################
@@ -164,7 +164,7 @@ app.layout = html.Div(
                 ),
             dcc.Graph(id = 'indicator-graphic2')
             ],
-            style = {'width' : '100%', 'display': 'inline-block', 'float': 'center'}
+            style = {'width' : '50%', 'display': 'inline-block', 'float': 'center'}
         )
 
        
@@ -263,7 +263,7 @@ def update_graph2(team_1, team_2):
         ],
         'layout': {
             'title': ('Comparison of Major Features'),
-            'height':700
+            'l':100
         }
     }
 

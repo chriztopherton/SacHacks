@@ -1,3 +1,18 @@
+body
+{
+    margin:1;
+    padding:1;
+    font-family: sans-serif;
+}
+#header
+{
+    height: 100vh;
+    background:  
+     url('https://images.pexels.com/photos/1227648/pexels-photo-1227648.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260');
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+} 
 .banner{
     heigh: 75px;
     margin: 0px - 10px 10px;
