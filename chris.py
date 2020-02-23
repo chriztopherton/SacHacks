@@ -4,6 +4,7 @@ import numpy as np
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State, ClientsideFunction
 
 import pandasql as ps
@@ -16,6 +17,8 @@ import io
 #import cufflinks as cf #Using cufflinks, a wrapper for easing plotting with pandas and plotly
 
 import dash_daq as daq
+
+
 
 
 app = dash.Dash(__name__)
@@ -66,13 +69,14 @@ def barplt_players(data,feat):
 # App Layout
 app.layout = html.Div(
     [
+        dbc.Row(dbc.Col(html.Div("NBA 2K RANKINGS")),align="center",),
         # Left dropdown for team 1
         html.Div([
             dcc.Markdown('Select First Team'),
                 dcc.Dropdown(
                     id = 'team1',
                     options = [{'label': i, 'value': i} for i in teams],
-                    value = 'Blazer5 Gaming'),
+                    value = 'Kings Guard Gaming'),
 
         # Middle dropdown for team 2
             dcc.Markdown('Select Second Team'),
@@ -83,7 +87,7 @@ app.layout = html.Div(
                 ),
             dcc.Graph(id = 'indicator-graphic')
             ],
-            style = {'width' : '40%', 'display': 'inline-block', 'float': 'center'}
+            style = {'width' : '50%', 'display': 'inline-block', 'float': 'center'}
         ),
 
 
@@ -114,7 +118,7 @@ app.layout = html.Div(
                     ),
                     dcc.Graph(id='allplayers_output-graphic')
             ],
-            style = {'width': '50%','display': 'inline-block', 'float': 'right'}
+            style = {'width': '100%','display': 'inline-block', 'float': 'right'}
         )
         
     ]
