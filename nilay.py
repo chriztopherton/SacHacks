@@ -16,7 +16,6 @@ import plotly.graph_objs as go
 import io
 import dash_daq as daq
 
-
 ########################################################################################################################################################################################################################################################################
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.BOOTSTRAP]
@@ -102,13 +101,13 @@ app.layout = html.Div(
     [
         html.Div(
             [
-                html.H1('NBA 2K DASH', style = {'fontSize': 50, 'text-transform': 'uppercase', 'font-weight': '800'}),
+                html.H1('NBA 2K Rankings', style = {'fontSize': 50, 'text-transform': 'uppercase', 'font-weight': '800'}),
                 html.Img(src = '/assets/2k20.png')
             ],
             className = 'banner'
         ),
         
-        dbc.Row(dbc.Col(html.H1("Kevin Chu, Christopher Ton, John Tran, Nilay Varshney,Dale Urbelis",
+        dbc.Row(dbc.Col(html.H1("Kevin Chu, Christopher Ton, John Tran, Nilay Varshney",
                                 style = {'fontSize': 15, 'paddingLeft': '1%'})),
                 align = "left"),
         
